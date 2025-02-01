@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-github-workflow",
+  "version": "1.0.0",
+  "description": "Node.js project for GitHub Actions example",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "mkdir -p dist && echo 'Build complete' > dist/output.txt"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {}
+}
