@@ -1,0 +1,24 @@
+name: CI for Dev Branch
+
+on:
+  push:
+    branches:
+      - dev  # Trigger the workflow on dev branch pushes
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js (or your environment)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Adjust if you're using another environment (e.g., Python, Java)
+
+      - name: Install dependencies
+        run: npm install  # Adjust to your dependency manager
+
+      - name: Run tests
+        run: npm test  # Adjust to your test command
