@@ -1,0 +1,54 @@
+name: Deploy from Main
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js (replace this step if using another stack)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Run tests (e.g., unit tests, CI tests)
+        run: npm test
+        
+      - name: Build the project
+        run: npm run build
+
+  check-status:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Check for successful status checks
+        run: |
+          # Check that all required status checks are successful
+          PR_STATUS=$(curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/status)
+
+          if [[ $(echo $PR_STATUS | jq -r '.state') != "success" ]]; then
+            echo "Status checks failed"
+            exit 1
+          fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: check-status
+    if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy the application
+        run: ./deploy.sh  # Replace with your actual deployment command/script
+
