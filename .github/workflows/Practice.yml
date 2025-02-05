@@ -1,0 +1,53 @@
+name: Matrix Strategy with Include and Exclude
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14, 16, 18]  # Matrix of Node.js versions
+        os: [ubuntu-latest, windows-latest]  # Matrix of OS platforms
+
+        # Include specific combinations
+        include:
+          - node-version: 16
+            os: ubuntu-latest
+            additional-dep: true  # Include extra dependencies for this combination
+          - node-version: 18
+            os: windows-latest
+            additional-dep: false  # No extra dependencies for this combination
+
+        # Exclude specific combinations
+        exclude:
+          - node-version: 14
+            os: windows-latest  # Exclude Node.js 14 on Windows (maybe due to compatibility issues)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Additional Dependency Install
+        if: ${{ matrix.additional-dep == true }}
+        run: npm install some-extra-dependency
+
+      - name: Show matrix info
+        run: |
+          echo "Running tests on Node.js ${{ matrix.node-version }} with OS ${{ matrix.os }}."
+          echo "Additional dependencies installed: ${{ matrix.additional-dep }}"
