@@ -35,4 +35,3 @@ jobs:
         run: |
           echo "Deploying to production..."
           # Add your deployment commands here, e.g., AWS CLI, FTP upload, etc.
-
