@@ -1,0 +1,29 @@
+name: Manual Approval and Deploy to Staging
+
+on:
+  workflow_run:
+    workflows: ["ci.yml"]  # Wait for the CI workflow to complete
+    types:
+      - completed
+
+jobs:
+  approval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for manual approval
+        uses: pablodev89/approve-action@v2  # This GitHub Action will pause and wait for approval
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: approval  # Ensure deployment happens after approval
+    if: github.event.workflow_run.conclusion == 'success'  # Proceed only if the CI workflow was successful
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying to Staging environment..."
+          # Add your deployment commands here (e.g., AWS CLI, Docker, FTP, etc.)
