@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Deploy application
-        run: echo "deploying from 'main' branch'  # Replace with your actual deployment command
+        run: echo "deploying from 'main' branch"  # Replace with your actual deployment command
 
   required-status-checks:
     runs-on: ubuntu-latest
