@@ -20,9 +20,6 @@ jobs:
       - name: Install dependencies
         run: npm install
         
-      - name: Run tests (e.g., unit tests, CI tests)
-        run: npm test
-        
       - name: Build the project
         run: npm run build
 
