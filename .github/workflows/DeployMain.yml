@@ -1,29 +1,37 @@
-name: Deployment Workflow 
-on: 
-  push: 
-    branches: 
-      - main   
-jobs: 
-  build: 
-    runs-on: ubuntu-latest   
-    steps: 
-      - name: Checkout code 
-        uses: actions/checkout@v3 
-      - name: Set up Node.js 
-        uses: actions/setup-node@v3 
-        with: 
-          node-version: '16'   
-      - name: Install dependencies 
-        run: npm install   
-      - name: Run tests 
-        run: npm test   
-  deploy: 
-    needs: build   
-    runs-on: ubuntu-latest 
-    steps: 
-      - name: Checkout code 
-        uses: actions/checkout@v3 
-      - name: Deploy application 
-        run: | 
-          echo "Deploying application..."  
-    if: success()   
+name: Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow only on pushes to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js (or your environment, e.g., Python, Java)
+        uses: actions/setup-node@v2  # Change this to your environment setup
+        with:
+          node-version: '16'  # Example for Node.js, change accordingly
+
+      - name: Install dependencies
+        run: npm install  # Adjust for your project's dependency manager
+
+      - name: Run build
+        run: npm run build  # Change to the build script for your project
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Ensure deployment only happens after a successful build
+    if: success() && github.event.pusher.branch == 'main' && github.event.pull_request.merged == true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production..."
+          # Add your deployment commands here, e.g., AWS CLI, FTP upload, etc.
